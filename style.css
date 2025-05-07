@@ -1,0 +1,683 @@
+
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align items to the top */
+            min-height: 100vh;
+            color: #ffffff; /* Color de texto general para el body */
+            padding: 20px; /* Add some padding */
+            box-sizing: border-box; /* Include padding in total width/height */
+            /* Estilos de fondo iniciales (para la pantalla de bienvenida) */
+            background-image: url('https://padbol.com/wp-content/uploads/2024/10/Video-1-min.jpg'); /* Nueva imagen de fondo */
+            background-size: cover; /* Cubrir todo el fondo */
+            background-position: center; /* Centrar la imagen */
+            background-repeat: no-repeat; /* No repetir la imagen */
+            background-attachment: fixed; /* Fija el fondo al hacer scroll */
+            transition: background-image 0.5s ease-in-out, background-color 0.5s ease-in-out; /* Transición suave del fondo */
+        }
+
+        /* Clase para el fondo oscuro del quiz y del listado */
+        body.quiz-active {
+            background-image: none; /* Eliminar la imagen de fondo */
+            background-color: #1a1a1a; /* Fondo oscuro sólido */
+            background-image: linear-gradient(to bottom, #1a1a1a, #333333); /* Opcional: degradado oscuro si se prefiere */
+        }
+
+
+        .container {
+             background-color: rgba(44, 44, 44, 0.8); /* Contenedor más oscuro con transparencia */
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); /* Sombra más pronunciada */
+            max-width: 700px; /* Limit the width */
+            width: 100%; /* Make it responsive */
+            text-align: center;
+            color: #e0e0e0; /* Color de texto dentro del contenedor */
+        }
+
+        .welcome-container {
+            /* Estilos para la página de bienvenida */
+            display: flex; /* Mostrar por defecto */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px; /* Altura mínima para centrar contenido */
+        }
+
+        .quiz-container {
+            /* Estilos para el contenedor del quiz */
+            display: none; /* Ocultar por defecto */
+        }
+
+         /* Estilos para la pantalla final */
+        .final-result-container {
+            display: none; /* Ocultar por defecto */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px; /* Altura mínima para centrar contenido */
+            /* Estilos de fondo por defecto (serán sobreescritos por approved/failed/timed-out) */
+            background-color: rgba(44, 44, 44, 0.8); /* Fondo oscuro con transparencia por defecto */
+            background-image: none; /* Sin imagen de fondo por defecto */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            transition: background-image 1s ease-in-out, background-color 1s ease-in-out; /* Transición suave del fondo */
+        }
+
+        /* Clase para la pantalla final de aprobado con imagen de fondo */
+        .final-result-container.approved {
+            background-image: url('https://padbol.com/wp-content/uploads/2024/10/Img-17-min.jpg');
+            background-color: rgba(44, 44, 44, 0.5); /* Menos transparencia para que se vea la imagen */
+        }
+
+         /* Clase para la pantalla final de no aprobado (baja puntuación) con imagen de fondo */
+        .final-result-container.failed {
+             background-image: url('https://padbol.com/wp-content/uploads/2024/10/77-min.jpg');
+             background-color: rgba(44, 44, 44, 0.6); /* Transparencia para que se vea la imagen */
+             /* No hay icono de reloj aquí */
+        }
+
+         /* Clase para la pantalla final de tiempo agotado con icono de reloj */
+         .final-result-container.timed-out {
+             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23cccccc" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>');
+             background-size: contain; /* Ajustar tamaño para que quepa */
+             background-position: center; /* Centrar la imagen */
+             background-repeat: no-repeat; /* No repetir la imagen */
+             background-color: rgba(44, 44, 44, 0.6); /* Fondo oscuro con transparencia para que se vea el icono */
+             background-attachment: scroll; /* Cambiado a scroll para que se mueva con el contenido */
+         }
+
+        /* Clase para el estado de carga de la pantalla final (inicialmente solo barra de progreso) */
+        .final-result-container.loading-result {
+            background-image: none !important; /* Forzar sin imagen de fondo */
+            background-color: #000 !important; /* Fondo negro */
+            transition: background-image 1s ease-in-out, background-color 1s ease-in-out; /* Transición suave */
+        }
+
+        /* Ocultar elementos de texto y botón en el estado de carga */
+        .final-result-container.loading-result h2,
+        .final-result-container.loading-result p,
+        /* .final-result-container.loading-result .final-score, Removido para que el texto "Tu puntuación final..." aparezca */
+        .final-result-container.loading-result .result-box button {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out; /* Transición suave para que aparezcan */
+        }
+
+
+        /* Estilos para el recuadro interior en las pantallas finales */
+        .final-result-container .result-box {
+            background-color: rgba(44, 44, 44, 0.7); /* Fondo semi-transparente oscuro para el recuadro */
+            padding: 20px; /* Espaciado interno */
+            border-radius: 8px; /* Bordes redondeados */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); /* Sombra sutil */
+            text-align: center; /* Centrar contenido dentro del recuadro */
+             width: 100%; /* Asegurar que el recuadro ocupe el ancho del contenedor */
+        }
+
+        /* Estilos comunes para el texto en las pantallas finales */
+        .final-result-container h2 {
+            font-family: 'Montserrat', sans-serif;
+            margin-bottom: 15px;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+             transition: opacity 0.5s ease-in-out; /* Transición para que aparezcan */
+        }
+
+         .final-result-container p {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #cccccc;
+             text-shadow: 0 0 5px rgba(0, 0, 0, 0.6);
+             transition: opacity 0.5s ease-in-out; /* Transición para que aparezcan */
+        }
+
+         .final-score {
+            font-size: 1.8em;
+            font-weight: bold;
+             /* Sombra de texto por defecto, será sobreescrita en approved/failed */
+             text-shadow: 0 0 5px rgba(0, 0, 0, 0.6);
+             margin-bottom: 10px; /* Espacio entre la puntuación y la barra */
+             color: #ffffff; /* Texto de puntuación final siempre blanco */
+             transition: opacity 0.5s ease-in-out; /* Transición para que aparezcan */
+        }
+
+        /* Estilos para el número de puntuación animado */
+        .final-score .animated-score {
+            /* Color y animación de brillo solo para el número en estado aprobado */
+            transition: color 0.5s ease-in-out; /* Transición de color */
+        }
+
+
+        /* Ajustes de texto y sombra para la pantalla de aprobado (dentro del result-box) */
+        .final-result-container.approved .result-box h2 {
+             text-shadow: 0 0 10px rgba(0, 0, 0, 0.9); /* Sombra oscura más pronunciada para el título en aprobado */
+             color: #ffffff; /* Asegurar color blanco */
+        }
+
+         .final-result-container.approved .result-box p {
+             text-shadow: 0 0 8px rgba(0, 0, 0, 0.8); /* Sombra oscura más pronunciada para el texto en aprobado */
+              color: #ffffff; /* Color de texto blanco en aprobado */
+         }
+
+         /* Estilos para el número de puntuación animado en la pantalla de aprobado con animación */
+         .final-result-container.approved .result-box .animated-score {
+             color: #39ff14; /* Un verde más brillante para el efecto de destello */
+             text-shadow: 0 0 5px #39ff14, /* Sombra base */
+                          0 0 10px #39ff14, /* Sombra más amplia */
+                          0 0 15px #39ff14; /* Sombra aún más amplia */
+             animation: neon-glow 1.5s ease-in-out infinite alternate; /* Aplicar la animación */
+         }
+
+        /* Definición de la animación de destello */
+        @keyframes neon-glow {
+            from {
+                text-shadow: 0 0 5px #39ff14,
+                             0 0 10px #39ff14,
+                             0 0 15px #39ff14;
+                opacity: 1;
+            }
+            to {
+                text-shadow: 0 0 8px #39ff14,
+                             0 0 15px #39ff14,
+                             0 0 25px #39ff14;
+                opacity: 0.8;
+            }
+        }
+
+
+        /* Ajustes de texto y sombra para la pantalla de no aprobado (dentro del result-box)*/
+        .final-result-container.failed .result-box h2 {
+             text-shadow: 0 0 10px rgba(0, 0, 0, 0.9); /* Sombra oscura para el título en no aprobado */
+             color: #ffffff; /* Asegurar color blanco */
+        }
+
+        .final-result-container.failed .result-box p {
+             text-shadow: 0 0 8px rgba(0, 0, 0, 0.8); /* Sombra oscura para el texto en no aprobado */
+             color: #cccccc; /* Color de texto gris claro en no aprobado */
+        }
+
+        .final-result-container.failed .result-box .final-score {
+             /* text-shadow: 0 0 8px rgba(0, 0, 0, 0.8); Sombra oscura para la puntuación en no aprobado */
+             /* color: #ff0000; Asegurar color rojo para la puntuación */
+        }
+
+         /* Estilos para el número de puntuación animado en la pantalla de no aprobado */
+         .final-result-container.failed .result-box .animated-score {
+             color: #ff0000; /* Color rojo para el número en estado desaprobado */
+              text-shadow: 0 0 8px rgba(255, 0, 0, 0.8); /* Sombra roja */
+         }
+
+
+        /* Wrapper para centrar la puntuación y la barra de progreso */
+        .score-progress-wrapper {
+            width: 100%; /* Ocupar el ancho disponible */
+            display: flex; /* Usar flexbox */
+            flex-direction: column; /* Apilar elementos verticalmente */
+            align-items: center; /* Centrar horizontalmente */
+            margin-bottom: 20px; /* Espacio debajo del wrapper */
+        }
+
+
+        /* Estilos para el contenedor de la barra de progreso */
+        .progress-bar-container {
+            width: 80%; /* Ancho del contenedor de la barra */
+            height: 25px; /* Altura de la barra */
+            background-color: #555; /* Fondo gris oscuro */
+            border-radius: 5px;
+            /* margin-top: 20px; Removido, ahora el wrapper maneja el espacio */
+            overflow: hidden; /* Ocultar el exceso de la barra de progreso */
+            position: relative; /* Para posicionar la línea de aprobación y el texto */
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2); /* Sombra interior */
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: #00aaff; /* Color de la barra (azul) */
+            width: 0%; /* Ancho inicial */
+            transition: width 2s ease-in-out; /* Animación suave del ancho - AUMENTADO A 2s */
+            /* Eliminamos los estilos de centrado y texto de aquí */
+        }
+
+        /* Estilos para el texto del porcentaje */
+        .percentage-text {
+            position: absolute; /* Posicionamiento absoluto dentro del contenedor */
+            top: 50%; /* Alinear verticalmente al centro */
+            left: 50%; /* Alinear horizontalmente al centro */
+            transform: translate(-50%, -50%); /* Centrar perfectamente */
+            color: #fff; /* Color del texto */
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            z-index: 2; /* Asegurar que esté por encima de la barra */
+        }
+
+
+        /* Línea indicadora del puntaje de aprobación */
+        .passing-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 2px; /* Grosor de la línea */
+            background-color: #00ff00; /* Color verde */
+            z-index: 1; /* Asegurar que esté por encima de la barra */
+            box-shadow: 0 0 5px rgba(0, 255, 0, 0.8); /* Sombra para que destaque */
+        }
+
+
+        h1 {
+            /* Estilos para el título moderno */
+            font-family: 'Montserrat', sans-serif; /* Aplicar la nueva fuente */
+            color: #ffffff; /* Color de título blanco */
+            margin-bottom: 20px;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.8); /* Sombra de texto más visible */
+            animation: none; /* Desactivar animación de brillo para mejor legibilidad con imagen */
+        }
+
+
+        #welcome-message, #quiz-info, #question, #score {
+             /* Sombra de texto para otros elementos importantes */
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.6);
+        }
+
+
+        #welcome-message {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        #quiz-info {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            color: #cccccc;
+        }
+
+        /* Estilos para el temporizador */
+        #timer {
+            font-size: 1.8em; /* Aumentar tamaño para que destaque */
+            font-weight: bold;
+            color: #ffffff; /* Color blanco por defecto */
+            margin-bottom: 20px;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); /* Sombra blanca sutil */
+            animation: subtle-flash 1.5s infinite alternate; /* Animación de destello sutil */
+        }
+
+        /* Estilo para el temporizador cuando queda poco tiempo */
+        #timer.timer-warning {
+            color: #ff0000; /* Color rojo */
+            text-shadow: 0 0 8px rgba(255, 0, 0, 0.8); /* Sombra roja para que destaque */
+        }
+
+
+        @keyframes subtle-flash {
+            from {
+                opacity: 1;
+                /* text-shadow se maneja en los estilos normales y timer-warning */
+            }
+            to {
+                opacity: 0.8;
+                /* text-shadow se maneja en los estilos normales y timer-warning */
+            }
+        }
+
+
+        #question {
+            font-size: 1.3em; /* Aumentar tamaño de fuente */
+            margin-bottom: 20px;
+            color: #ffffff; /* Color de pregunta */
+            text-align: left; /* Align question text to the left */
+            line-height: 1.5; /* Espaciado entre líneas */
+        }
+
+        #options {
+            text-align: left; /* Align options to the left */
+            margin-bottom: 20px;
+        }
+
+        .option {
+            display: flex; /* Usar flexbox para alinear contenido y el ícono */
+            align-items: center; /* Alinear verticalmente */
+            margin-bottom: 15px; /* Space between options */
+            cursor: pointer; /* Indicate clickable area */
+            padding: 12px; /* Aumentar padding */
+            /* Estilos para la tarjeta blanca */
+            background-color: #ffffff; /* Fondo blanco */
+            color: #333; /* Color de texto oscuro para contrastar */
+            border: 1px solid #ddd; /* Borde sutil */
+            border-radius: 5px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            position: relative; /* Necesario para posicionar el ícono */
+        }
+
+        .option:hover {
+            background-color: #f0f0f0; /* Fondo ligeramente gris al pasar el ratón */
+            border-color: #007bff; /* Borde azul al pasar el ratón */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Sombra un poco más pronunciada al pasar el ratón */
+        }
+
+        .option input[type="radio"] {
+            margin-right: 10px;
+            /* Estilos básicos para el radio button (puede variar el soporte) */
+            accent-color: #007bff;
+            /* Ocultar radio buttons en el modal */
+            .modal-quiz-content & {
+                display: none;
+            }
+        }
+
+        /* Estilos para el feedback visual en las opciones */
+        .option.correct {
+            background-color: #d4edda; /* Verde claro */
+            border-color: #28a745; /* Borde verde */
+            color: #155724; /* Texto verde oscuro */
+        }
+
+        .option.incorrect {
+            background-color: #f8d7da; /* Rojo claro */
+            border-color: #dc3545; /* Borde rojo */
+            color: #721c24; /* Texto rojo oscuro */
+        }
+
+        /* Estilos para los íconos */
+        .option::after {
+            content: '';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .option.selected-correct::after {
+            content: '✓'; /* Tilde */
+            color: #28a745; /* Verde */
+        }
+
+        .option.selected-incorrect::after {
+            content: '✗'; /* Cruz */
+            color: #dc3545; /* Rojo */
+        }
+
+
+        button {
+            padding: 12px 25px; /* Aumentar padding */
+            font-size: 1.1em; /* Aumentar tamaño de fuente */
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease, background 0.3s ease;
+            margin-top: 15px; /* Aumentar margen superior */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Estilos para el botón Responder y Comenzar Examen: rojo oscuro con degradado */
+        /* Incluimos el botón de reintentar aquí para que tenga el mismo estilo */
+        #submit-button, #start-button, #retry-button {
+             background: linear-gradient(to bottom, #a00000, #8b0000); /* Degradado rojo oscuro */
+             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* Sombra más pronunciada para botones */
+             transition: opacity 0.5s ease-in-out; /* Transición para que aparezcan */
+        }
+
+        /* Estilos hover para los botones */
+        #submit-button:hover, #start-button:hover, #retry-button:hover {
+            /* Degradado ligeramente diferente al pasar el ratón */
+            background: linear-gradient(to bottom, #b30000, #990000);
+            transform: translateY(-2px); /* Efecto ligero al pasar el ratón */
+             box-shadow: 0 6px 10px rgba(0, 0, 0, 0.5); /* Sombra más grande al pasar el ratón */
+        }
+
+        /* Estilos active para los botones */
+        #submit-button:active, #start-button:active, #retry-button:active {
+            transform: translateY(0); /* Efecto al hacer click */
+             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+         /* Estilo específico para el botón Siguiente Pregunta */
+        #next-button {
+            display: none; /* Initially hidden */
+             background: linear-gradient(to bottom, #a00000, #8b0000); /* Degradado rojo oscuro */
+             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* Sombra más pronunciada para botones */
+        }
+
+        #next-button:hover {
+             background: linear-gradient(to bottom, #b30000, #990000); /* Degradado ligeramente diferente al pasar el ratón */
+             transform: translateY(-2px); /* Efecto ligero al pasar el ratón */
+             box-shadow: 0 6px 10px rgba(0, 0, 0, 0.5); /* Sombra más grande al pasar el ratón */
+        }
+
+         #next-button:active {
+            transform: translateY(0); /* Efecto al hacer click */
+             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+         }
+
+        /* Estilos para los botones de prueba */
+        .test-buttons {
+            margin-top: 20px;
+            display: flex; /* Usar flexbox */
+            justify-content: center; /* Centrar horizontalmente */
+            gap: 10px; /* Espacio entre botones */
+            flex-wrap: wrap; /* Permitir que los botones se envuelvan en pantallas pequeñas */
+        }
+
+        .test-buttons button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background: linear-gradient(to bottom, #444, #222); /* Degradado oscuro */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            margin-top: 0; /* Reset margin-top from general button style */
+        }
+
+         .test-buttons button:hover {
+            background: linear-gradient(to bottom, #555, #333);
+            transform: translateY(-2px);
+            box-shadow: 4px 6px 8px rgba(0, 0, 0, 0.4);
+         }
+
+         .test-buttons button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+         }
+
+
+        #feedback {
+            margin-top: 20px;
+            font-size: 1.2em; /* Aumentar tamaño de fuente */
+            font-weight: bold;
+            min-height: 1.5em; /* Reservar espacio para el feedback */
+            color: transparent; /* Ocultar el texto de feedback original */
+        }
+
+        #score {
+            margin-top: 30px;
+            font-size: 1.6em; /* Aumentar tamaño de fuente */
+            font-weight: bold;
+            color: #00aaff; /* Color de puntuación */
+        }
+
+        /* Estilos para el contenedor del listado de preguntas */
+        #questions-list-container {
+            display: none; /* Ocultar por defecto */
+            text-align: left; /* Alinear texto a la izquierda */
+            max-height: 80vh; /* Limitar altura para scroll */
+            overflow-y: auto; /* Añadir scroll vertical */
+            padding-right: 15px; /* Espacio para la barra de scroll */
+            padding-bottom: 80px; /* Add padding at the bottom to make space for the fixed button */
+            position: relative; /* Needed for absolute positioning of children if any in the future */
+        }
+
+        #questions-list-container h2 {
+            text-align: center; /* Centrar título */
+            margin-bottom: 20px;
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .question-item {
+            background-color: rgba(255, 255, 255, 0.1); /* Fondo semi-transparente para cada pregunta */
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            cursor: pointer; /* Indicar que es clickeable */
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .question-item:hover {
+             background-color: rgba(255, 255, 255, 0.2); /* Ligeramente más opaco al pasar el ratón */
+             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+
+        .question-item p {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            color: #e0e0e0;
+            text-shadow: none; /* Eliminar sombra para mejor legibilidad */
+        }
+
+        .question-item ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 5px;
+        }
+
+        .question-item ul li {
+            margin-bottom: 5px;
+            color: #cccccc;
+        }
+
+        .question-item .correct-answer {
+            font-weight: bold;
+            color: #39ff14; /* Color verde brillante para la respuesta correcta */
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.2); /* Línea separadora */
+        }
+
+        /* Estilos para el botón de ver listado */
+        #show-questions-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            background: linear-gradient(to bottom, #444, #222); /* Degradado oscuro */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+         #show-questions-button:hover {
+            background: linear-gradient(to bottom, #555, #333);
+            transform: translateY(-2px);
+            box-shadow: 4px 6px 8px rgba(0, 0, 0, 0.4);
+         }
+
+         #show-questions-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+         }
+
+         /* Estilos para el botón de cerrar listado */
+         #close-questions-list {
+            margin-top: 0; /* Remove default margin-top */
+            padding: 10px 20px;
+            font-size: 1em;
+            background: linear-gradient(to bottom, #a00000, #8b0000); /* Degradado rojo oscuro */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            /* Fixed positioning */
+            position: fixed;
+            bottom: 20px; /* Distance from the bottom */
+            left: 50%; /* Center horizontally */
+            transform: translateX(-50%); /* Adjust for the button's width */
+            z-index: 100; /* Ensure it's above the list content */
+            width: auto; /* Adjust width based on content */
+         }
+
+          #close-questions-list:hover {
+             background: linear-gradient(to bottom, #b30000, #990000); /* Degradado ligeramente diferente al pasar el ratón */
+             transform: translateX(-50%) translateY(-2px); /* Apply both transforms */
+             box-shadow: 0 6px 10px rgba(0, 0, 0, 0.5); /* Sombra más grande al pasar el ratón */
+         }
+
+          #close-questions-list:active {
+             transform: translateX(-50%) translateY(0); /* Apply both transforms */
+             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+          }
+
+        /* Estilos para el Modal */
+        .modal-overlay {
+            display: none; /* Oculto por defecto */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro semi-transparente */
+            z-index: 1000; /* Asegurar que esté por encima de todo */
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto; /* Permitir scroll si el contenido es largo */
+            padding: 20px; /* Padding around the modal content */
+            box-sizing: border-box;
+        }
+
+        .modal-content {
+            background-color: rgba(44, 44, 44, 0.9); /* Fondo oscuro con más opacidad */
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.7);
+            max-width: 600px; /* Ancho máximo del modal */
+            width: 100%;
+            position: relative; /* Para posicionar el botón de cerrar */
+            color: #e0e0e0; /* Color de texto */
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ffffff;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: #ff0000; /* Rojo al pasar el ratón */
+        }
+
+        /* Estilos específicos para el contenido del quiz dentro del modal */
+        .modal-quiz-content #question {
+             font-size: 1.2em; /* Ajustar tamaño de fuente */
+             margin-bottom: 15px;
+             text-align: left;
+        }
+
+        .modal-quiz-content #options .option {
+             padding: 10px; /* Ajustar padding */
+             margin-bottom: 10px; /* Ajustar margen */
+             cursor: default; /* No es clickeable en el modal */
+        }
+
+         .modal-quiz-content #options .option:hover {
+             background-color: #ffffff; /* No cambiar color al pasar el ratón */
+             border-color: #ddd; /* No cambiar borde al pasar el ratón */
+             box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1); /* No cambiar sombra al pasar el ratón */
+         }
+
+         .modal-quiz-content #options .option input[type="radio"] {
+             display: none; /* Ocultar radio buttons en el modal */
+         }
+
+        .modal-quiz-content #timer,
+        .modal-quiz-content #submit-button,
+        .modal-quiz-content #next-button,
+        .modal-quiz-content #feedback,
+        .modal-quiz-content #score {
+            display: none; /* Ocultar elementos del quiz que no son relevantes en el modal */
+        }
+
+
+    

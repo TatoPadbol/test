@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Examen de Entrenador de Padbol</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&amp;display=swap" rel="stylesheet"/>
+
+<link href="style.css" rel="stylesheet"/></head>
+<body>
+<div class="container">
+<div class="welcome-container" id="welcome-screen">
+<h1>¡Bienvenido al Examen de Entrenador de Padbol!</h1>
+<p id="welcome-message">Este examen consta de 57 preguntas de opción múltiple y tendrás 25 minutos para completarlo.</p>
+<p id="quiz-info">Cuando te sientas preparado, simplemente presiona el botón "Comenzar Examen" para iniciar.</p>
+<button id="start-button">Comenzar Examen</button>
+<p id="success-message" style="margin-top: 20px; font-size: 1.2em; color: #00ff00; display: none;">¡Te deseamos mucho éxito!</p>
+<div class="test-buttons">
+<button id="test-approved-button">Ver Pantalla Aprobado</button>
+<button id="test-failed-button">Ver Pantalla Desaprobado</button>
+<button id="test-timedout-button">Ver Pantalla Tiempo Agotado</button>
+</div>
+<button id="show-questions-button">Ver Listado de Preguntas y Respuestas</button>
+</div>
+<div class="quiz-container" id="quiz-screen">
+<div id="timer">25:00</div>
+<div id="question"></div>
+<div id="options">
+</div>
+<button id="submit-button">Responder</button>
+<div id="feedback"></div>
+<button id="next-button">Siguiente Pregunta</button>
+<div id="score"></div>
+</div>
+<div class="final-result-container" id="final-result-screen">
+</div>
+<div id="questions-list-container">
+<h2>Listado de Preguntas y Respuestas</h2>
+<div id="questions-list-content">
+</div>
+</div>
+</div>
+<button id="close-questions-list">Cerrar Listado</button>
+<div class="modal-overlay" id="question-modal">
+<div class="modal-content">
+<span class="modal-close">×</span>
+<div class="modal-quiz-content">
+<div id="modal-question"></div>
+<div id="modal-options"></div>
+</div>
+</div>
+</div>
+
+<script src="script.js"></script></body>
+</html>
